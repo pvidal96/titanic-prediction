@@ -5,38 +5,46 @@ import pickle
 import json
 
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
 # Filename (could be in an env variable or passed by argument)
 filename = ''
 
-#Train the model
-def train():
-    # Import training data
-    train = pd.read_csv('./python/train.csv')
+# Prepare dataset for fitting/prediction
+def getDataset():
+    data = pd.read_csv('./python/train.csv')
 
-    # Concat new features
-    sex = pd.get_dummies(train['Sex'], drop_first = True)
-    embark = pd.get_dummies(train['Embarked'],drop_first=True)
-    pcl = pd.get_dummies(train['Pclass'],drop_first=True)
-    train = pd.concat([train,sex,embark,pcl],axis=1)
+     # Concat new features
+    sex = pd.get_dummies(data['Sex'], drop_first = True)
+    embark = pd.get_dummies(data['Embarked'],drop_first=True)
+    pcl = pd.get_dummies(data['Pclass'],drop_first=True)
+    dataset = pd.concat([data,sex,embark,pcl],axis=1)
 
-    # Dropping columns from trainset
-    train.drop(['Pclass','Sex','Embarked','Cabin','PassengerId','Name','Ticket'],axis=1, inplace=True)
+    # Dropping columns from dataset
+    dataset.drop(['Pclass','Sex','Embarked','Cabin','PassengerId','Name','Ticket'],axis=1, inplace=True)
     
     # Handling null values
-    train_values = {'Age': round(np.mean(train['Age']))}
-    train = train.fillna(value = train_values)
+    data_values = {'Age': round(np.mean(data['Age']))}
+    dataset = dataset.fillna(value = data_values)
 
     # Prepare train data
-    X = train.drop('Survived',axis=1)
+    X = dataset.drop('Survived',axis=1)
     X = X.rename(str,axis="columns") 
-    y = train['Survived']
+    y = dataset['Survived']
+
+    return train_test_split(X, y, test_size=0.3, random_state=1)
+
+# Train the model
+def train():
+    # Import training data
+    X_train, X_test, y_train, y_test = getDataset()
 
     # Define model
     logmodel = LogisticRegression(solver='liblinear')
 
     # Train model
-    logmodel.fit(X, y)
+    logmodel.fit(X_train, y_train)
     LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
             intercept_scaling=1, max_iter=100, multi_class='warn',
             n_jobs=None, penalty='l2', random_state=None, solver='liblinear',
@@ -57,7 +65,28 @@ def predict(subject):
     loaded_model = pickle.load(open(filename, 'rb'))
     predictions = loaded_model.predict(query)
     result = { 
-        "result": int(predictions[0])
+        "survives": bool(predictions[0])
+    }
+    
+    sys.stdout.write(json.dumps(result))
+    sys.stdout.flush()
+    sys.exit(0)
+
+# Get model accuracy
+def getAccuracy():
+    loaded_model = pickle.load(open(filename, 'rb'))
+
+    # Import testing data
+    X_train, X_test, y_train, y_test = getDataset()
+
+    test = getDataset()
+
+    predictions = loaded_model.predict(X_test)
+    
+    accuracy = accuracy_score(y_test, predictions)
+
+    result = { 
+        "accuracy": float(accuracy)
     }
     
     sys.stdout.write(json.dumps(result))
@@ -102,6 +131,8 @@ if arg_len >= 3:
     elif sys.argv[1] == 'predict' and arg_len == 4:
         subject = parse_subject(sys.argv[3])
         predict(subject) 
+    elif sys.argv[1] == 'accuracy':
+        getAccuracy()
     else:
         show_help()
 else:
