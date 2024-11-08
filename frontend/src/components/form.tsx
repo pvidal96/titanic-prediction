@@ -105,6 +105,7 @@ class Form extends Component<PropsWithRef<Props>, State> {
           id="parents"
           type="number"
           min={0}
+          max={2}
           value={parents}
           onChange={this._handleParentChange}
         />

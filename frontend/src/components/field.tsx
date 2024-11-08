@@ -15,7 +15,7 @@ const Field = ({
 }: PropsWithChildren<FieldProps> & JSX.IntrinsicElements['input']) => (
   <div className="inputGroup">
     <label htmlFor={id}>{label}</label>
-    <input id={id} className="inputField inputText" {...rest} />
+    <input id={id} className="inputField" {...rest} />
   </div>
 );
 
