@@ -2,6 +2,7 @@ import './App.css';
 import Tabs from './components/tabs';
 import Panel from './components/panel';
 import ModelInfoPage from './pages/modelInfoPage';
+import PredictionPage from './pages/predictionPage';
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
         <ModelInfoPage />
       </Panel>
       <Panel title="Predict">
-        <div>TODO</div>{' '}
+        <PredictionPage />
       </Panel>
     </Tabs>
   );
