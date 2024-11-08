@@ -14,6 +14,8 @@ services:
     ports:
       - 4000:4000
   frontend:
+    depends_on:
+      - backend
     build:
       context: ./frontend
       dockerfile: ./Docker/Dockerfile
@@ -23,3 +25,5 @@ services:
       - ./frontend:/home/usr/app/
     ports:
       - 3000:3000
+    links:
+      - backend

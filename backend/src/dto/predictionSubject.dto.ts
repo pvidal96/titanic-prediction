@@ -22,6 +22,7 @@ export class PredictionSubject {
   siblingsSpouse: number;
 
   @IsInt()
+  @Max(2)
   @Min(0)
   parents: number;
 
@@ -44,5 +45,5 @@ export class PredictionSubject {
   @IsNumber({ allowNaN: false })
   @Min(1)
   @Max(3)
-  class: string;
+  class: number;
 }
