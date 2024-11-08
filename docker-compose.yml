@@ -7,11 +7,15 @@ services:
     command: npm run start:dev
     environment:
       - NODE_ENV=development
+      - SCRIPT_PATH=./python/main.py
+      - MODEL_PATH=./python/titanic_model.pck
     volumes:
       - ./backend:/home/pn/app/
     ports:
-      - 3000:3000
+      - 4000:4000
   frontend:
+    depends_on:
+      - backend
     build:
       context: ./frontend
       dockerfile: ./Docker/Dockerfile
@@ -20,4 +24,6 @@ services:
     volumes:
       - ./frontend:/home/usr/app/
     ports:
-      - 4000:4000
+      - 3000:3000
+    links:
+      - backend

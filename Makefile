@@ -9,8 +9,8 @@ db:
 # Docker down
 dd: 
 	docker compose -f $(DOCKER_FILE) down 
-#Docker restart
-dr:
+#Docker rebuild
+drb:
 	make dd && make db
 # Docker start
 du:

@@ -1,25 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Tabs from './components/tabs';
+import Panel from './components/panel';
+import ModelInfoPage from './pages/modelInfoPage';
+import PredictionPage from './pages/predictionPage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Tabs initialSelection={0}>
+      <Panel title="Model Info">
+        <ModelInfoPage />
+      </Panel>
+      <Panel title="Predict">
+        <PredictionPage />
+      </Panel>
+    </Tabs>
   );
 }
 
